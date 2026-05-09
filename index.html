@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(168, 85, 247, 0.2) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px 45px;
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+                0 0 80px rgba(99, 102, 241, 0.2);
+            max-width: 520px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: containerFloat 0.8s ease-out;
+        }
+
+        @keyframes containerFloat {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glass shine effect */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%
+            );
+            border-radius: 32px 32px 0 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 12px;
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .greeting {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 35px;
+            font-size: 1.05em;
+            font-weight: 400;
+            opacity: 0;
+            animation: fadeSlideIn 0.6s ease-out 0.2s forwards;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.92em;
+            letter-spacing: 0.3px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1a1f3a;
+            color: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 
+                0 0 0 4px rgba(168, 85, 247, 0.1),
+                0 8px 20px rgba(168, 85, 247, 0.2);
+            transform: translateY(-1px);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.08em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 35px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            text-align: center;
+            animation: resultGlow 0.5s ease-out;
+            box-shadow: 
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+                0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes resultGlow {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .status-message {
+            color: rgba(168, 85, 247, 0.9);
+            font-weight: 600;
+            margin-bottom: 18px;
+            font-size: 1em;
+            letter-spacing: 0.3px;
+        }
+
+        .result-value {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 15px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .goodbye-message {
+            margin-top: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            font-size: 0.95em;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .timestamp {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85em;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        /* Floating particles effect */
+        .particle {
+            position: absolute;
+            background: rgba(168, 85, 247, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particle" style="left: 10%; width: 4px; height: 4px; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 30%; width: 6px; height: 6px; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 50%; width: 3px; height: 3px; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 70%; width: 5px; height: 5px; animation-delay: 9s;"></div>
+    <div class="particle" style="left: 85%; width: 4px; height: 4px; animation-delay: 12s;"></div>
+
+    <div class="container">
+        <div class="timestamp" id="timestamp"></div>
+        <h1>🌡️ Temp Converter</h1>
+        <p class="greeting">Hello dear! This tool converts temperature units.</p>
+        
+        <div class="form-group">
+            <label for="initialUnit">Initial Unit</label>
+            <select id="initialUnit">
+                <option value="">Select unit...</option>
+                <option value="c">Celsius (°C)</option>
+                <option value="f">Fahrenheit (°F)</option>
+                <option value="k">Kelvin (K)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="finalUnit">Final Unit</label>
+            <select id="finalUnit">
+                <option value="">Select unit...</option>
+                <option value="c">Celsius (°C)</option>
+                <option value="f">Fahrenheit (°F)</option>
+                <option value="k">Kelvin (K)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="value">Temperature Value</label>
+            <input type="number" id="value" step="any" placeholder="Enter temperature...">
+        </div>
+
+        <button id="convertBtn">Convert Temperature</button>
+
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <div class="status-message" id="statusMessage"></div>
+            <div class="result-value" id="resultValue"></div>
+            <div class="goodbye-message">Have a good day! ✨</div>
+        </div>
+    </div>
+
+    <script>
+        // Display current time
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        const convertBtn = document.getElementById('convertBtn');
+        const resultContainer = document.getElementById('resultContainer');
+        const statusMessage = document.getElementById('statusMessage');
+        const resultValue = document.getElementById('resultValue');
+        const valueInput = document.getElementById('value');
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function convertTemperature() {
+            const initialUnit = document.getElementById('initialUnit').value.toLowerCase();
+            const finalUnit = document.getElementById('finalUnit').value.toLowerCase();
+            const value = parseFloat(document.getElementById('value').value);
+
+            // Validation
+            if (!initialUnit || !finalUnit || isNaN(value)) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            // Disable button
+            convertBtn.disabled = true;
+            convertBtn.textContent = 'Converting...';
+            
+            // Show result container
+            resultContainer.style.display = 'block';
+            resultValue.textContent = '';
+            
+            // Animated status messages
+            statusMessage.textContent = 'Analyzing...';
+            await sleep(1500);
+            
+            statusMessage.textContent = 'Calling NASA... 🚀';
+            await sleep(2500);
+            
+            statusMessage.textContent = 'And here is your result:';
+            await sleep(1000);
+
+            let result;
+            let isError = false;
+
+            // Temperature conversion logic
+            if (initialUnit === 'f' && finalUnit === 'c') {
+                result = (value - 32) * 5/9;
+            } else if (initialUnit === 'c' && finalUnit === 'f') {
+                result = (value * 9/5) + 32;
+            } else if (initialUnit === 'c' && finalUnit === 'k') {
+                result = value + 273.15;
+            } else if (initialUnit === 'k' && finalUnit === 'c') {
+                result = value - 273.15;
+            } else if (initialUnit === 'k' && finalUnit === 'f') {
+                result = (value - 273.15) * 9/5 + 32;
+            } else if (initialUnit === 'f' && finalUnit === 'k') {
+                result = (value - 32) * 5/9 + 273.15;
+            } else if (initialUnit === finalUnit) {
+                result = value;
+            } else {
+                result = "Can't access — maybe double-check your units?";
+                isError = true;
+            }
+
+            // Display result
+            if (isError) {
+                statusMessage.textContent = '';
+                resultValue.textContent = result;
+                resultValue.className = 'result-value error';
+            } else {
+                statusMessage.textContent = 'Result:';
+                const unitSymbols = {
+                    'c': '°C',
+                    'f': '°F',
+                    'k': 'K'
+                };
+                resultValue.textContent = result.toFixed(2) + ' ' + unitSymbols[finalUnit];
+                resultValue.className = 'result-value';
+            }
+
+            // Re-enable button
+            convertBtn.disabled = false;
+            convertBtn.textContent = 'Convert Temperature';
+        }
+
+        // Button click event
+        convertBtn.addEventListener('click', convertTemperature);
+
+        // Enter key event
+        valueInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertTemperature();
+            }
+        });
+
+        // Also allow Enter on select elements
+        document.getElementById('initialUnit').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertTemperature();
+            }
+        });
+
+        document.getElementById('finalUnit').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertTemperature();
+            }
+        });
+    </script>
+</body>
+</html>
